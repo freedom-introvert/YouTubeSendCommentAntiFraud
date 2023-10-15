@@ -1,0 +1,101 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "icu.freedomintrovert.YTSendCommAntiFraud.grpcApi";
+option java_outer_classname = "YTVideoComments";
+
+message VideoCommentRequest {
+	Context context = 1;
+	string continuation = 8;
+}
+
+message Context {
+	Client client = 1;
+	MsgU1_6 msgu1_6 = 6;
+}
+
+message Client {
+	string manufacturer = 12;
+	string model = 13;
+	string system = 18;
+	string sysVersion = 19;
+	string language = 21;
+	string country = 22;
+	string timeZone = 80;
+	string brand = 98;
+}
+
+message MsgU1_6 {
+	message MsgU1_6_2 {
+		message MsgU1_6_2_4 {
+			int64 time = 1;
+		}
+		MsgU1_6_2_4 msgu1_6_2_4 = 4;
+	}
+	MsgU1_6_2 msgu1_6_2 = 2;
+}
+
+
+
+message VideoCommentResponse {
+	ContinuationItemsAction777 ContinuationItemsAction = 777;
+	NextInfo8 nextInfo8 = 8;
+}
+
+message ContinuationItemsAction777 {
+	ContinuationItems continuationItems  = 1;
+}
+
+message ContinuationItems {
+	repeated ContinuationItem continuationItem = 1;
+}
+
+message ContinuationItem {
+	UNK3 unk3 = 3;
+}
+
+message UNK3 {
+	Comment comment = 40;
+}
+
+message Comment {
+	Content content = 2;
+	User user = 3;
+}
+
+message Content {
+	string commentId = 1;
+	Msg msg = 3;
+}
+
+message Msg {
+	string message = 1;
+}
+
+message User {
+	string uid = 1;
+	string uAT = 2;
+	string avatarUrl = 3;
+}
+
+message NextInfo8 {
+	UnkMsg49399797 unkMsg49399797 = 49399797;
+	UnkMsg50195462 unkMsg50195462 = 50195462;
+}
+
+message UnkMsg49399797 {
+	message UnkMsg49399797_1 {
+		UnkMsg50195462 unkMsg50195462 = 50195462;
+	}
+	repeated UnkMsg49399797_1 unkMsg1 = 1;
+}
+
+message UnkMsg50195462 {
+	message UnkMsg2 {
+		message UnkMsg52047593{
+			string continuation = 1;
+		}
+		UnkMsg52047593 unkMsg52047593 = 52047593;
+	}
+	repeated UnkMsg2 unkMsg2 = 2;
+}
+

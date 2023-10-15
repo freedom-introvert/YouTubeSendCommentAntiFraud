@@ -1,0 +1,33 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "icu.freedomintrovert.YTSendCommAntiFraud.grpcApi.nestedIntoBase64";
+option java_outer_classname = "ContinuationCommand";
+
+message Continuation{
+  VideoIdMsg videoIdMsg = 2;
+  int32 unknownInt_3 = 3;//通常为6,未知属性
+  CommentSectionInfo commentSectionInfo = 6;
+}
+
+message VideoIdMsg {
+  string videoId = 2;
+}
+
+message CommentSectionInfo {
+  message Config {
+    string videoId = 4;
+    SortBy sortBy = 6;
+    int32 unknownInt_15 = 15;//通常为2，未知属性
+    int32 unknownInt_41 = 41;//我也不知道干啥的，设置1就行了
+    int32 unknownInt_44 = 44;//我也不知道干啥的，设置1就行了
+    bytes unknownBytes_45 = 45;//我也不知道干啥的，设置 hex:[01 06 08 05] byte[]{1,6,8,5} 就行了
+  }
+  Config config = 4;
+  string comments_sectionMy = 8;//通常为"comments-section"
+}
+
+
+enum SortBy {
+  hot = 0;
+  latest = 1;
+}

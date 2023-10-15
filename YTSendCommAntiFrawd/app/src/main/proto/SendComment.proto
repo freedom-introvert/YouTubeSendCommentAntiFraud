@@ -1,0 +1,34 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "icu.freedomintrovert.YTSendCommAntiFraud.grpcApi";
+option java_outer_classname = "CreatComment";
+
+message CreatCommentRequest {
+  Context1 context1 = 1;
+  string videoInfoProtoBase64 = 2;
+  string commentText = 3;
+  int32 unknownInt_17 = 17;
+}
+
+message Context1 {
+  //发送评论与获取评论中的message字段1一致，应该属于设备信息等，直接复制byteArray就行了，此处留空
+}
+
+message CreatCommentResponse {
+  Actions actions = 4;
+}
+
+message Actions {
+    RunAttestationCommand runAttestationCommand = 272487492;
+}
+
+message RunAttestationCommand {
+ repeated Ids ids = 1;
+}
+
+
+message Ids {
+  string commentId = 3;
+  string encryptedVideoId = 8;
+  string externalChannelId = 2;
+}

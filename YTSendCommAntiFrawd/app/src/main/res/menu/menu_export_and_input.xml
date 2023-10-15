@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/export_and_input"
+        android:icon="@drawable/baseline_more_vert_24"
+        android:tint="#ffffff"
+        android:title="@string/options"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:icon="@drawable/baseline_sort_24"
+                android:id="@+id/item_sort"
+                android:title="@string/sort" />
+            <item android:icon="@drawable/baseline_filter_alt_24"
+                android:id="@+id/item_filter"
+                android:title="@string/filter" />
+            <item
+                android:id="@+id/item_export"
+                android:icon="@drawable/baseline_upload_24"
+                android:title="@string/export" />
+            <item
+                android:id="@+id/item_import"
+                android:icon="@drawable/baseline_download_24"
+                android:title="@string/import_" />
+        </menu>
+    </item>
+
+</menu>
