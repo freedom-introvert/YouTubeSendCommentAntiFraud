@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="yt_theme_color">#FE0000</color>
-    <color name="background">#FAFAFA</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="menu_icon">#454859</color>
-    <color name="dark_font">#000000</color>
-</resources>
