@@ -23,11 +23,10 @@
 ## 适配版本
 在模块未适配新版本时，请勿更新YouTube，这会导致模块失效！！因为要hook的混淆类名几乎每发布一个版本就会改变  
 ### 已适配（保证能用）
-- 官版
+- 官版&[ReVanced Extended](https://revancedextended.com/)
     - 18.32.36(1539433920)
     - 18.40.33(1540476352)  
--  [ReVanced Extended](https://revancedextended.com/)
-    - 18.32.36(1539433920)
+    - 18.46.43(1541283264)
 ## 小功能
 ### 分享URL去跟踪 
 对视频按分享所生成的URL，例如`https://youtu.be/1Q-5eIBfBDQ?si=XXxxxxxxxX_xx_xX`真正有用的是`https://youtu.be/1Q-5eIBfBDQ`，后面的`?si=XXxxxxxxxX_xx_xX`为跟踪参数，用于区分谁分享的链接。开启此功能后自动删除后尾的跟踪参数，保护隐私。

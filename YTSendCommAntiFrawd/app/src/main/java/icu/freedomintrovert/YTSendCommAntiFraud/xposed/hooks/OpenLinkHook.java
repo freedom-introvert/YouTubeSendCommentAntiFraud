@@ -10,6 +10,7 @@ import android.widget.Toast;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
@@ -35,8 +36,12 @@ public class OpenLinkHook extends BaseHook {
                         String url = data.getQueryParameter("q");
                         if (url != null) {
                             intent.setData(Uri.parse(url));
-                            Toast.makeText((Context) param.thisObject, "已将追踪式重定向链接转为正常链接：" + url, Toast.LENGTH_SHORT).show();
-                            XposedBridge.log(String.format("已将YT追踪式重定向链接转为正常链接[%s ==> %s]", data.toString(), url));
+                            String msg = "Tracked redirect links have been converted into normal links:";
+                            if (Locale.getDefault().getLanguage().equals("zh")){
+                                msg = "已将追踪式重定向链接转为正常链接：";
+                            }
+                            Toast.makeText((Context) param.thisObject, msg + url, Toast.LENGTH_SHORT).show();
+                            XposedBridge.log(String.format(msg+"[%s ==> %s]", data.toString(), url));
                         }
                     }
                 }

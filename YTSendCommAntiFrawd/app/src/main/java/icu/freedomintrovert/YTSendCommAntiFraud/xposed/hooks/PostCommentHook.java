@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
@@ -42,6 +43,9 @@ public class PostCommentHook extends BaseHook {
     Map<Object, ByteArrayOutputStream> callbackMap = new HashMap<>();
     AtomicReference<Context> currentContext = new AtomicReference<>();
     private final InHookXConfig config = InHookXConfig.getInstance();
+    Class<?> urlRequest$CallbackImplClass = null;
+    String simpleImmutableEntryFieldName = null;
+    String cronetUploadDataStreamFieldName = null;
 
     /*
     适配版本：
@@ -51,6 +55,32 @@ public class PostCommentHook extends BaseHook {
      */
     @Override
     public void startHook(int appVersionCode, ClassLoader classLoader) throws ClassNotFoundException {
+
+        Class<?> cronetUrlRequestClass = XposedHelpers.findClass("org.chromium.net.impl.CronetUrlRequest", classLoader);
+        for (Field field : cronetUrlRequestClass.getDeclaredFields()) {
+            //XposedBridge.log("fieldType:"+field.getType()+" fieldName:"+field.getName());
+            if (field.getType().getCanonicalName().equals("org.chromium.net.impl.CronetUploadDataStream")){
+                cronetUploadDataStreamFieldName = field.getName();
+            }
+            Class<?> superclass = field.getType().getSuperclass();
+            if (superclass != null){
+                if (superclass.getCanonicalName() == null) return;
+                //XposedBridge.log("super:"+superclass);
+                if (superclass.getCanonicalName().equals("org.chromium.net.UrlRequest$Callback")){
+                    urlRequest$CallbackImplClass = field.getType();
+                } else if (superclass.getCanonicalName().equals("java.util.ArrayList")){
+                    simpleImmutableEntryFieldName = field.getName();
+                }
+            }
+        }
+
+        if (urlRequest$CallbackImplClass == null){
+            XposedBridge.log("未找到org.chromium.net.UrlRequest$Callback的实现类，请降级版本到所支持的YouTube版本！");
+            XposedBridge.log("The implementation class of org.chromium.net.UrlRequest$Callback was not found. Please downgrade the version to a supported version!");
+            return;
+        }
+        XposedBridge.log("Find UrlRequest$CallbackImplClass:"+urlRequest$CallbackImplClass.getCanonicalName());
+
         XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -65,16 +95,19 @@ public class PostCommentHook extends BaseHook {
                 XposedBridge.log("context:" + context);
             }
         });
-
-        if (appVersionCode < 1540476352) {
-            hookUrlRequestCallbackImpl(classLoader,"ayng");
+        hookUrlRequestCallbackImpl(classLoader,urlRequest$CallbackImplClass);
+        /*if (appVersionCode < 1540476352) {
+            hookUrlRequestCallbackImpl(classLoader, "ayng");
+        } else if (appVersionCode <= 1540476352) {
+            hookUrlRequestCallbackImpl(classLoader, "azyn");
         } else {
-            hookUrlRequestCallbackImpl(classLoader,"azyn");
-        }
-
+            hookUrlRequestCallbackImpl(classLoader, "bapr");
+        }*/
     }
-    private void hookUrlRequestCallbackImpl(ClassLoader classLoader,String implName) throws ClassNotFoundException {
-        XposedHelpers.findAndHookMethod(implName, classLoader, "onReadCompleted", classLoader.loadClass("org.chromium.net.UrlRequest"), classLoader.loadClass("org.chromium.net.UrlResponseInfo"), java.nio.ByteBuffer.class, new XC_MethodHook() {
+
+
+    private void hookUrlRequestCallbackImpl(ClassLoader classLoader, Class<?> implName) throws ClassNotFoundException {
+        XposedHelpers.findAndHookMethod(implName, "onReadCompleted", classLoader.loadClass("org.chromium.net.UrlRequest"), classLoader.loadClass("org.chromium.net.UrlResponseInfo"), java.nio.ByteBuffer.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
@@ -102,14 +135,14 @@ public class PostCommentHook extends BaseHook {
             }
         });
 
-        XposedHelpers.findAndHookMethod(implName, classLoader, "onSucceeded", classLoader.loadClass("org.chromium.net.UrlRequest"), classLoader.loadClass("org.chromium.net.UrlResponseInfo"), new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(implName, "onSucceeded", classLoader.loadClass("org.chromium.net.UrlRequest"), classLoader.loadClass("org.chromium.net.UrlResponseInfo"), new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 super.beforeHookedMethod(param);
                 Object urlRequest = param.args[0];
                 Object urlResponseInfo = param.args[1];
                 String url = (String) XposedHelpers.callMethod(urlResponseInfo, "getUrl");
-                ArrayList<AbstractMap.SimpleImmutableEntry<String, String>> headers = (ArrayList<AbstractMap.SimpleImmutableEntry<String, String>>) XposedHelpers.getObjectField(urlRequest, "s");
+                ArrayList<AbstractMap.SimpleImmutableEntry<String, String>> headers = (ArrayList<AbstractMap.SimpleImmutableEntry<String, String>>) XposedHelpers.getObjectField(urlRequest, simpleImmutableEntryFieldName);
                 if (url.startsWith("https://youtubei.googleapis.com/youtubei/")) {
                     outHeadersToFile(headers);
                 }
@@ -121,7 +154,7 @@ public class PostCommentHook extends BaseHook {
                     fileOutputStream.write(byteArrayOutputStream.toByteArray());
                     fileOutputStream.close();*/
                     //XposedBridge.log("urlRequest:"+urlRequest);
-                    Object cronetUploadDataStream = XposedHelpers.getObjectField(urlRequest, "f");
+                    Object cronetUploadDataStream = XposedHelpers.getObjectField(urlRequest, cronetUploadDataStreamFieldName);
                     if (cronetUploadDataStream != null) {
                         Object uploadDataProvider_aynf = XposedHelpers.getObjectField(cronetUploadDataStream, "b");
                         Object uploadDataProvider_sub_aylc = XposedHelpers.getObjectField(uploadDataProvider_aynf, "a");
@@ -146,21 +179,22 @@ public class PostCommentHook extends BaseHook {
         });
     }
 
-    private synchronized void outHeadersToFile(ArrayList<AbstractMap.SimpleImmutableEntry<String,String>> headers){
+    private synchronized void outHeadersToFile(ArrayList<AbstractMap.SimpleImmutableEntry<String, String>> headers) {
         File mediaDir = new File("/storage/emulated/0/Android/media/com.google.android.youtube/");
-        if (!mediaDir.exists()){
+        if (!mediaDir.exists()) {
             mediaDir.mkdirs();
         }
-        File headersFile = new File(mediaDir,"headers.txt");
+        //XposedBridge.log(headers.toString());
+        File headersFile = new File(mediaDir, "headers.txt");
         StringBuilder sb = new StringBuilder();
         boolean hasAuthorization = false;
         for (int i = 0; i < headers.size(); i++) {
             String key = headers.get(i).getKey();
-            if (key.equals("Authorization")){
+            if (key.equals("Authorization")) {
                 hasAuthorization = true;
             }
             sb.append(key).append("=").append(headers.get(i).getValue());
-            if (i != headers.size() -1){
+            if (i != headers.size() - 1) {
                 sb.append("\n");
             }
         }
@@ -175,18 +209,18 @@ public class PostCommentHook extends BaseHook {
         }
     }
 
-    private void startCheck(byte[] requestBody,byte[] responseBody,ArrayList<AbstractMap.SimpleImmutableEntry<String,String>> headers) throws InvalidProtocolBufferException {
+    private void startCheck(byte[] requestBody, byte[] responseBody, ArrayList<AbstractMap.SimpleImmutableEntry<String, String>> headers) throws InvalidProtocolBufferException {
         CreatCommentRequest creatCommentRequest = CreatCommentRequest.parseFrom(requestBody);
         CreatCommentResponse creatCommentResponse = CreatCommentResponse.parseFrom(responseBody);
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("icu.freedomintrovert.YTSendCommAntiFraud", "icu.freedomintrovert.YTSendCommAntiFraud.ByXposedLunchedActivity"));
         intent.putExtra("context1", creatCommentRequest.getContext1().toByteArray());
-        intent.putExtra("commentText",creatCommentRequest.getCommentText());
+        intent.putExtra("commentText", creatCommentRequest.getCommentText());
         RunAttestationCommand runAttestationCommand = creatCommentResponse.getActions().getRunAttestationCommand();
         String commentId = runAttestationCommand.getIds(0).getCommentId();
         String videoId = runAttestationCommand.getIds(1).getEncryptedVideoId();
-        intent.putExtra("commentId",commentId);
-        intent.putExtra("videoId",videoId);
+        intent.putExtra("commentId", commentId);
+        intent.putExtra("videoId", videoId);
         Bundle headersBundle = new Bundle();
         for (AbstractMap.SimpleImmutableEntry<String, String> header : headers) {
             headersBundle.putString(header.getKey(), header.getValue());
@@ -204,12 +238,12 @@ public class PostCommentHook extends BaseHook {
         //重置 limit 和postion 值
         buffer.flip();
         //获取buffer中有效大小
-        int len=buffer.limit() - buffer.position();
+        int len = buffer.limit() - buffer.position();
 
-        byte [] bytes=new byte[len];
+        byte[] bytes = new byte[len];
 
         for (int i = 0; i < bytes.length; i++) {
-            bytes[i]=buffer.get();
+            bytes[i] = buffer.get();
         }
 
         return bytes;

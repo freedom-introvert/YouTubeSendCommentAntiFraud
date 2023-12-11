@@ -11,10 +11,10 @@ android {
         applicationId "icu.freedomintrovert.YTSendCommAntiFraud"
         minSdk 21
         targetSdk 33
-        versionCode 128
-        versionName "1.2.8"
-        //versionName "1.0_${currentTimeMillis}"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 150
+        versionName "1.5.0"
+      //  versionName "1.0_${currentTimeMillis}"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         abortOnError false
