@@ -83,4 +83,6 @@
     <string name="fuck_censorship_desc">启用后在你评论发送后弹出自动检查对话框</string>
     <string name="share_url_anti_tracking_desc">删除分享URL后面的追踪参数“?si=xxx”，保护隐私</string>
     <string name="remove_open_link_redirection_desc">把youtube.com/redirect转为你本要打开的链接，避免拖慢打开速度以及被恶意收集隐私</string>
+    <string name="enable_prohibit_rotation">禁止后台返回时切换至竖屏</string>
+    <string name="enable_prohibit_rotation_desc">禁止从后台返回时将你的横屏视频旋转为竖屏详情页</string>
 </resources>

@@ -83,4 +83,6 @@
     <string name="fuck_censorship_desc">When enabled, an automatic detection dialog box will pop up after your comment is sent.</string>
     <string name="share_url_anti_tracking_desc">Delete the tracking parameter after the share URL \"?si=xxx\" to protect privacy</string>
     <string name="remove_open_link_redirection_desc">Switch youtube.com/redirect to the link you intended to open to avoid slow opening and malicious privacy collection</string>
+    <string name="enable_prohibit_rotation">Disable switching to portrait screen when background returns</string>
+    <string name="enable_prohibit_rotation_desc">Disable rotating your landscape video to portrait detail page when returning from background</string>
 </resources>

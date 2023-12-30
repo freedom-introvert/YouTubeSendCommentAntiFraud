@@ -3,6 +3,7 @@ package icu.freedomintrovert.YTSendCommAntiFraud.xposed.hooks;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import java.lang.reflect.Parameter;
 import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -47,5 +49,17 @@ public class OpenLinkHook extends BaseHook {
                 }
             }
         });
+
+       /* XposedHelpers.findAndHookMethod("hfq", classLoader, "c", android.content.res.Configuration.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                XposedBridge.log("Configuration:"+param.args[0]);
+            }
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+            }
+        });*/
     }
 }

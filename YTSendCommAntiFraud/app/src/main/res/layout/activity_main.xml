@@ -245,7 +245,7 @@
 
                                 <ImageView
                                     android:layout_width="40dp"
-                                    android:layout_height="34dp"
+                                    android:layout_height="40dp"
                                     android:layout_gravity="center"
                                     android:gravity="center"
                                     android:src="@drawable/eraser" />
@@ -280,6 +280,61 @@
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/sw_enable_simplify_url"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="15dp"
+                                android:focusable="true"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="80dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:src="@drawable/baseline_screen_lock_landscape_24" />
+                            </FrameLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:paddingEnd="20dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/enable_prohibit_rotation"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/enable_prohibit_rotation_desc"
+                                    android:textColor="@color/hint"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/sw_enable_prohibit_rotation"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="15dp"

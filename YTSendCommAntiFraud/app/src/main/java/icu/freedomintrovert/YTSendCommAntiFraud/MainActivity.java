@@ -11,8 +11,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     Config config;
     XConfig xConfig;
     private SwitchCompat sw_save_history;
-    private SwitchCompat sw_enable_fuck_censorship,sw_share_url_anti_tracking,sw_enable_simplify_url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,27 +66,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initConfigurationSW() {
+        SwitchCompat sw_enable_fuck_censorship,sw_share_url_anti_tracking,sw_enable_simplify_url,sw_enable_prohibit_rotation;
         sw_enable_fuck_censorship = findViewById(R.id.sw_enable_fuck_censorship);
         sw_share_url_anti_tracking = findViewById(R.id.sw_share_url_anti_tracking);
         sw_enable_simplify_url = findViewById(R.id.sw_enable_simplify_url);
+        sw_enable_prohibit_rotation = findViewById(R.id.sw_enable_prohibit_rotation);
         //如果无法读取配置文件，则锁定开关为关闭
         if (xConfig == null){
             sw_enable_fuck_censorship.setEnabled(false);
             sw_share_url_anti_tracking.setEnabled(false);
             sw_enable_simplify_url.setEnabled(false);
+            sw_enable_prohibit_rotation.setEnabled(false);
         } else {
             sw_enable_fuck_censorship.setChecked(xConfig.getAntiFraudEnabled());
-            sw_enable_fuck_censorship.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                xConfig.setAntiFraudEnabled(isChecked);
-            });
+            sw_enable_fuck_censorship.setOnCheckedChangeListener((buttonView, isChecked) -> xConfig.setAntiFraudEnabled(isChecked));
             sw_share_url_anti_tracking.setChecked(xConfig.getShareUrlAntiTrackingEnabled());
-            sw_share_url_anti_tracking.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                xConfig.setShareUrlAntiTrackingEnabled(isChecked);
-            });
+            sw_share_url_anti_tracking.setOnCheckedChangeListener((buttonView, isChecked) -> xConfig.setShareUrlAntiTrackingEnabled(isChecked));
             sw_enable_simplify_url.setChecked(xConfig.getRemoveOpenLinkRedirectionEnabled());
-            sw_enable_simplify_url.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                xConfig.setRemoveOpenLinkRedirectionEnabled(isChecked);
-            });
+            sw_enable_simplify_url.setOnCheckedChangeListener((buttonView, isChecked) -> xConfig.setRemoveOpenLinkRedirectionEnabled(isChecked));
+            sw_enable_prohibit_rotation.setChecked(xConfig.getEnableProhibitRotation());
+            sw_enable_prohibit_rotation.setOnCheckedChangeListener((buttonView, isChecked) -> xConfig.setEnableProhibitRotation(isChecked));
         }
     }
 
