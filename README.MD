@@ -32,6 +32,8 @@
 对视频按分享所生成的URL，例如`https://youtu.be/1Q-5eIBfBDQ?si=XXxxxxxxxX_xx_xX`真正有用的是`https://youtu.be/1Q-5eIBfBDQ`，后面的`?si=XXxxxxxxxX_xx_xX`为跟踪参数，用于区分谁分享的链接。开启此功能后自动删除后尾的跟踪参数，保护隐私。
 ### 去除打开链接重定向
 你在YouTube点击某蓝色可点击链接，如`https://u.jd.com`打开后跳转浏览器，浏览器地址栏显示的却是`https://www.youtube.com/redirect?event=backstage_event&redir_token=XXX......XXX&q=https://u.jd.com/&html_redirect=1`，然后才跳转目标网址。BYD！这个“redir_token”是干嘛的心里有点逼数，为了收集隐私强加一个重定向链接，还他妈拖慢速度，梯子慢一点直接打不开！开启此功能将把“/redirect”重定向链接转为你本要打开的链接，避免拖满打开速度以及被恶意收集隐私。
+### 禁止后台返回时自动退出全屏
+你播放某个横屏视频时，切换到其他应用，再从后台返回时，你被暂停的视频会直接退出全屏到竖屏详情页。启用后禁止返回时自动退出全屏，保持横屏，与b站等逻辑一致。
 ## 检查逻辑
 ### 说明
 
